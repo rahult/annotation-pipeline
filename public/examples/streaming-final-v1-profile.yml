@@ -1,0 +1,62 @@
+# Profile documentation export. This prototype selects built-in profiles by exact ID/version; it does not execute imported profile definitions.
+apiVersion: tracegrade.dev/v1
+kind: NormalizationProfile
+id: streaming-final-v1
+version: 1.0.0
+name: Streaming · explicit completion event
+team: Conversation platform
+description: Read the request, context, model, and explicit cost from the root. On the unique
+  chat.stream span from stream-gateway, read recorded time to first token and the stream.completed
+  final-answer receipt. Repeated stream.chunk events are retained as evidence but never concatenated
+  into a final answer.
+fields:
+  - target: service
+    source: resource
+    attribute: service.name
+    format: text
+  - target: environment
+    source: resource
+    attribute: deployment.environment.name
+    format: text
+  - target: input
+    source: root
+    attribute: stream.request
+    format: text
+  - target: context
+    source: root
+    attribute: stream.context
+    format: text
+  - target: model
+    source: root
+    attribute: stream.model
+    format: text
+  - target: costUsd
+    source: root
+    attribute: stream.cost_usd
+    format: number
+    unit: usd
+    transform: Keep explicit USD; require a finite nonnegative number
+  - target: attributes.stream.ttft_ms
+    source: span
+    spanName: chat.stream
+    serviceName: stream-gateway
+    attribute: stream.ttft_ms
+    format: number
+    unit: ms
+    transform: Copy explicit nonnegative time to first token in milliseconds
+  - target: output
+    source: event
+    spanName: chat.stream
+    serviceName: stream-gateway
+    eventName: stream.completed
+    attribute: stream.final_text
+    format: text
+  - target: attributes.stream.completion_receipt
+    source: event
+    spanName: chat.stream
+    serviceName: stream-gateway
+    eventName: stream.completed
+    attribute: stream.completion_count
+    format: number
+    unit: number
+    transform: Copy the explicit nonnegative completion receipt count; do not count chunk events

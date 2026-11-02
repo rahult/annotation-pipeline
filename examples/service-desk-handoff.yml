@@ -1,0 +1,82 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Service desk handoff · synthetic example
+  description: SYNTHETIC SCENARIO. Decide whether specialist handoffs preserve approval requirements
+    when multiple services emit identically named response spans. All traces and supplied judgments
+    are authored fixtures; no production agent was measured.
+  domain: it-operations
+  agent: service-desk-coordinator
+guidelines:
+  - id: handoff_context
+    title: Preserve approval and access scope
+    description: The access specialist must receive the original approval restriction. An identity
+      verification response is intermediate evidence, not the final access decision.
+  - id: handoff_budget
+    title: Limit routing to two recorded handoffs
+    description: Use the explicit coordinator handoff count. Repeated routing must not hide lost context
+      or unauthorized actions.
+dataset:
+  source: import
+  filters:
+    service: service-desk-coordinator
+    environment: production
+    start: 2026-11-01T11:00:00.000Z
+    end: 2026-11-01T11:10:00.000Z
+    scenario: service-desk-handoff
+  sample:
+    strategy: recent
+    size: 3
+    minimum: 3
+  required:
+    - input
+    - output
+    - context
+  normalization:
+    profile: handoff-services-v1
+    version: 1.0.0
+scorers:
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+  - ref: domain/it-operations/handoff-completeness
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 0.9
+    weight: 35
+    enabled: true
+    critical: true
+  - ref: agent/service-desk-coordinator/handoff-budget
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 2
+    weight: 15
+    enabled: true
+    critical: false
+review:
+  on_failure: true
+  sample_percent: 0
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

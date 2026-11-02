@@ -1,0 +1,45 @@
+# Profile documentation export. This prototype selects built-in profiles by exact ID/version; it does not execute imported profile definitions.
+apiVersion: tracegrade.dev/v1
+kind: NormalizationProfile
+id: checkout-shop-v1
+version: 1.0.0
+name: Checkout · custom shop attributes
+team: Commerce engineering
+description: Map exact shop.* root attributes and the legacy environment resource key. Recorded
+  cents are divided by 100; an absent cost stays unscored. Tool outcomes use explicit OTLP status
+  codes, including unknown UNSET outcomes.
+fields:
+  - target: service
+    source: resource
+    attribute: service.name
+    format: text
+  - target: environment
+    source: resource
+    attribute: deployment.environment
+    format: text
+  - target: input
+    source: root
+    attribute: shop.request
+    format: json
+    transform: Parse or preserve structured JSON
+  - target: output
+    source: root
+    attribute: shop.result
+    format: json
+    transform: Parse or preserve structured JSON
+  - target: model
+    source: root
+    attribute: shop.agent_model
+    format: text
+  - target: costUsd
+    source: root
+    attribute: shop.total_cost_cents
+    format: number
+    unit: cents
+    transform: Divide cents by 100 to USD
+  - target: attributes.checkout.payment_attempts
+    source: root
+    attribute: shop.payment.attempts
+    format: number
+    unit: number
+    transform: Copy a finite nonnegative number to the exact trace attribute key

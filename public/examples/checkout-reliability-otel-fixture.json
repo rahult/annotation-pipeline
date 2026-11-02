@@ -1,0 +1,646 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "checkout-orchestrator"
+            }
+          },
+          {
+            "key": "deployment.environment",
+            "value": {
+              "stringValue": "production"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": "synthetic-1.0.0"
+            }
+          }
+        ]
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "synthetic.shop.legacy-instrumentation",
+            "version": "1.0.0"
+          },
+          "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+          "spans": [
+            {
+              "traceId": "000000000000000000000000000007d1",
+              "spanId": "0000000000030da5",
+              "name": "shop.checkout · Completed checkout",
+              "kind": 2,
+              "startTimeUnixNano": "1793528400000000000",
+              "endTimeUnixNano": "1793528400900000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "checkout-reliability"
+                  }
+                },
+                {
+                  "key": "shop.agent_model",
+                  "value": {
+                    "stringValue": "synthetic-checkout-orchestrator"
+                  }
+                },
+                {
+                  "key": "shop.request",
+                  "value": {
+                    "stringValue": "{\"cart\":\"synthetic-cart-1\",\"items\":[{\"sku\":\"SAMPLE-MUG\",\"quantity\":1}],\"currency\":\"USD\"}"
+                  }
+                },
+                {
+                  "key": "shop.result",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "order",
+                          "value": {
+                            "stringValue": "synthetic-order-1"
+                          }
+                        },
+                        {
+                          "key": "status",
+                          "value": {
+                            "stringValue": "confirmed"
+                          }
+                        },
+                        {
+                          "key": "payment_attempts",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "shop.total_cost_cents",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "shop.payment.attempts",
+                  "value": {
+                    "intValue": "1"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d1",
+              "spanId": "0000000000030da6",
+              "parentSpanId": "0000000000030da5",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528400100000000",
+              "endTimeUnixNano": "1793528400300000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "1"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d2",
+              "spanId": "0000000000030e09",
+              "name": "shop.checkout · Unknown payment outcome",
+              "kind": 2,
+              "startTimeUnixNano": "1793528580000000000",
+              "endTimeUnixNano": "1793528581200000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "checkout-reliability"
+                  }
+                },
+                {
+                  "key": "shop.agent_model",
+                  "value": {
+                    "stringValue": "synthetic-checkout-orchestrator"
+                  }
+                },
+                {
+                  "key": "shop.request",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "cart",
+                          "value": {
+                            "stringValue": "synthetic-cart-2"
+                          }
+                        },
+                        {
+                          "key": "items",
+                          "value": {
+                            "arrayValue": {
+                              "values": [
+                                {
+                                  "kvlistValue": {
+                                    "values": [
+                                      {
+                                        "key": "sku",
+                                        "value": {
+                                          "stringValue": "SAMPLE-MUG"
+                                        }
+                                      },
+                                      {
+                                        "key": "quantity",
+                                        "value": {
+                                          "intValue": "1"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "key": "currency",
+                          "value": {
+                            "stringValue": "USD"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "shop.result",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "order",
+                          "value": {
+                            "stringValue": "synthetic-order-2"
+                          }
+                        },
+                        {
+                          "key": "status",
+                          "value": {
+                            "stringValue": "pending_confirmation"
+                          }
+                        },
+                        {
+                          "key": "payment_attempts",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "shop.total_cost_cents",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "shop.payment.attempts",
+                  "value": {
+                    "intValue": "1"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d2",
+              "spanId": "0000000000030e0a",
+              "parentSpanId": "0000000000030e09",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528580100000000",
+              "endTimeUnixNano": "1793528580300000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "1"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d3",
+              "spanId": "0000000000030e6d",
+              "name": "shop.checkout · Cost missing",
+              "kind": 2,
+              "startTimeUnixNano": "1793528760000000000",
+              "endTimeUnixNano": "1793528761800000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "checkout-reliability"
+                  }
+                },
+                {
+                  "key": "shop.agent_model",
+                  "value": {
+                    "stringValue": "synthetic-checkout-orchestrator"
+                  }
+                },
+                {
+                  "key": "shop.request",
+                  "value": {
+                    "stringValue": "{\"cart\":\"synthetic-cart-3\",\"items\":[{\"sku\":\"SAMPLE-MUG\",\"quantity\":1}],\"currency\":\"USD\"}"
+                  }
+                },
+                {
+                  "key": "shop.result",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "order",
+                          "value": {
+                            "stringValue": "synthetic-order-3"
+                          }
+                        },
+                        {
+                          "key": "status",
+                          "value": {
+                            "stringValue": "confirmed"
+                          }
+                        },
+                        {
+                          "key": "payment_attempts",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "shop.payment.attempts",
+                  "value": {
+                    "intValue": "2"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d3",
+              "spanId": "0000000000030e6e",
+              "parentSpanId": "0000000000030e6d",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528760100000000",
+              "endTimeUnixNano": "1793528760300000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "1"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d3",
+              "spanId": "0000000000030e6f",
+              "parentSpanId": "0000000000030e6d",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528760400000000",
+              "endTimeUnixNano": "1793528760600000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "2"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d4",
+              "spanId": "0000000000030ed1",
+              "name": "shop.checkout · Slow payment retries",
+              "kind": 2,
+              "startTimeUnixNano": "1793528940000000000",
+              "endTimeUnixNano": "1793528944500000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "checkout-reliability"
+                  }
+                },
+                {
+                  "key": "shop.agent_model",
+                  "value": {
+                    "stringValue": "synthetic-checkout-orchestrator"
+                  }
+                },
+                {
+                  "key": "shop.request",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "cart",
+                          "value": {
+                            "stringValue": "synthetic-cart-4"
+                          }
+                        },
+                        {
+                          "key": "items",
+                          "value": {
+                            "arrayValue": {
+                              "values": [
+                                {
+                                  "kvlistValue": {
+                                    "values": [
+                                      {
+                                        "key": "sku",
+                                        "value": {
+                                          "stringValue": "SAMPLE-MUG"
+                                        }
+                                      },
+                                      {
+                                        "key": "quantity",
+                                        "value": {
+                                          "intValue": "1"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "key": "currency",
+                          "value": {
+                            "stringValue": "USD"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "shop.result",
+                  "value": {
+                    "kvlistValue": {
+                      "values": [
+                        {
+                          "key": "order",
+                          "value": {
+                            "stringValue": "synthetic-order-4"
+                          }
+                        },
+                        {
+                          "key": "status",
+                          "value": {
+                            "stringValue": "confirmed_after_retries"
+                          }
+                        },
+                        {
+                          "key": "payment_attempts",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "shop.total_cost_cents",
+                  "value": {
+                    "intValue": "1"
+                  }
+                },
+                {
+                  "key": "shop.payment.attempts",
+                  "value": {
+                    "intValue": "3"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d4",
+              "spanId": "0000000000030ed2",
+              "parentSpanId": "0000000000030ed1",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528940100000000",
+              "endTimeUnixNano": "1793528940300000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "1"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d4",
+              "spanId": "0000000000030ed3",
+              "parentSpanId": "0000000000030ed1",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528940400000000",
+              "endTimeUnixNano": "1793528940600000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "2"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "000000000000000000000000000007d4",
+              "spanId": "0000000000030ed4",
+              "parentSpanId": "0000000000030ed1",
+              "name": "shop.payment.authorize",
+              "kind": 1,
+              "startTimeUnixNano": "1793528940700000000",
+              "endTimeUnixNano": "1793528940900000000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "payment_authorize"
+                  }
+                },
+                {
+                  "key": "shop.attempt",
+                  "value": {
+                    "intValue": "3"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

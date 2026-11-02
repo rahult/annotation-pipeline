@@ -1,0 +1,484 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "document-reviewer"
+            }
+          },
+          {
+            "key": "deployment.environment.name",
+            "value": {
+              "stringValue": "production"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": "synthetic-1.0.0"
+            }
+          }
+        ]
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "synthetic.document.event-instrumentation",
+            "version": "1.0.0"
+          },
+          "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+          "spans": [
+            {
+              "traceId": "00000000000000000000000000000bb9",
+              "spanId": "0000000000049445",
+              "name": "document.review · Supported citation",
+              "kind": 2,
+              "startTimeUnixNano": "1793529600000000000",
+              "endTimeUnixNano": "1793529602800000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "document-review"
+                  }
+                },
+                {
+                  "key": "review.question",
+                  "value": {
+                    "stringValue": "How much notice is needed to cancel the sample service?"
+                  }
+                },
+                {
+                  "key": "review.model",
+                  "value": {
+                    "stringValue": "synthetic-document-model"
+                  }
+                },
+                {
+                  "key": "review.cost_usd",
+                  "value": {
+                    "doubleValue": 0.03
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000000bb9",
+              "spanId": "0000000000049446",
+              "parentSpanId": "0000000000049445",
+              "name": "retrieval.search",
+              "kind": 1,
+              "startTimeUnixNano": "1793529600080000000",
+              "endTimeUnixNano": "1793529600260000000",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "INTERMEDIATE search query; not the user request"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "INTERMEDIATE search hits; not the final answer"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "review.completed",
+                  "attributes": [
+                    {
+                      "key": "review.answer",
+                      "value": {
+                        "stringValue": "WRONG SPAN: this is retrieval output, not a final answer."
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000000bb9",
+              "spanId": "0000000000049447",
+              "parentSpanId": "0000000000049445",
+              "name": "review.retrieve_evidence",
+              "kind": 1,
+              "startTimeUnixNano": "1793529600300000000",
+              "endTimeUnixNano": "1793529600800000000",
+              "attributes": [
+                {
+                  "key": "review.context",
+                  "value": {
+                    "stringValue": "SYNTHETIC DOCUMENT §4: Give 30 days of written notice before cancelling the service."
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000000bb9",
+              "spanId": "0000000000049448",
+              "parentSpanId": "0000000000049445",
+              "name": "document.review.finalize",
+              "kind": 1,
+              "startTimeUnixNano": "1793529600900000000",
+              "endTimeUnixNano": "1793529602780000000",
+              "attributes": [
+                {
+                  "key": "review.phase",
+                  "value": {
+                    "stringValue": "final_answer"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "review.completed",
+                  "timeUnixNano": "1793529602750000000",
+                  "attributes": [
+                    {
+                      "key": "review.answer",
+                      "value": {
+                        "stringValue": "The sample service requires 30 days of written notice [§4]."
+                      }
+                    },
+                    {
+                      "key": "review.citation.value",
+                      "value": {
+                        "doubleValue": 0.98
+                      }
+                    },
+                    {
+                      "key": "review.citation.provenance",
+                      "value": {
+                        "stringValue": "synthetic-fixture/citation-rubric-v1; authored example, no model call"
+                      }
+                    },
+                    {
+                      "key": "review.citation.reason",
+                      "value": {
+                        "stringValue": "The cited section directly supports the notice period."
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000000bba",
+              "spanId": "00000000000494a9",
+              "name": "document.review · Citation judgment missing",
+              "kind": 2,
+              "startTimeUnixNano": "1793529780000000000",
+              "endTimeUnixNano": "1793529783100000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "document-review"
+                  }
+                },
+                {
+                  "key": "review.question",
+                  "value": {
+                    "stringValue": "When is the sample renewal reminder sent?"
+                  }
+                },
+                {
+                  "key": "review.model",
+                  "value": {
+                    "stringValue": "synthetic-document-model"
+                  }
+                },
+                {
+                  "key": "review.cost_usd",
+                  "value": {
+                    "doubleValue": 0.025
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000000bba",
+              "spanId": "00000000000494aa",
+              "parentSpanId": "00000000000494a9",
+              "name": "retrieval.search",
+              "kind": 1,
+              "startTimeUnixNano": "1793529780080000000",
+              "endTimeUnixNano": "1793529780260000000",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "INTERMEDIATE search query; not the user request"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "INTERMEDIATE search hits; not the final answer"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "review.completed",
+                  "attributes": [
+                    {
+                      "key": "review.answer",
+                      "value": {
+                        "stringValue": "WRONG SPAN: this is retrieval output, not a final answer."
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000000bba",
+              "spanId": "00000000000494ab",
+              "parentSpanId": "00000000000494a9",
+              "name": "review.retrieve_evidence",
+              "kind": 1,
+              "startTimeUnixNano": "1793529780300000000",
+              "endTimeUnixNano": "1793529780800000000",
+              "attributes": [
+                {
+                  "key": "review.context",
+                  "value": {
+                    "stringValue": "SYNTHETIC DOCUMENT §7: A renewal reminder is sent 14 days before the term ends."
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000000bba",
+              "spanId": "00000000000494ac",
+              "parentSpanId": "00000000000494a9",
+              "name": "document.review.finalize",
+              "kind": 1,
+              "startTimeUnixNano": "1793529780900000000",
+              "endTimeUnixNano": "1793529783080000000",
+              "attributes": [
+                {
+                  "key": "review.phase",
+                  "value": {
+                    "stringValue": "final_answer"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "review.completed",
+                  "timeUnixNano": "1793529783050000000",
+                  "attributes": [
+                    {
+                      "key": "review.answer",
+                      "value": {
+                        "stringValue": "A reminder is sent 14 days before the term ends [§7]."
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000000bbb",
+              "spanId": "000000000004950d",
+              "name": "document.review · Unsupported citation",
+              "kind": 2,
+              "startTimeUnixNano": "1793529960000000000",
+              "endTimeUnixNano": "1793529963600000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "document-review"
+                  }
+                },
+                {
+                  "key": "review.question",
+                  "value": {
+                    "stringValue": "How much notice is needed to cancel the sample service?"
+                  }
+                },
+                {
+                  "key": "review.model",
+                  "value": {
+                    "stringValue": "synthetic-document-model"
+                  }
+                },
+                {
+                  "key": "review.cost_usd",
+                  "value": {
+                    "doubleValue": 0.027
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000000bbb",
+              "spanId": "000000000004950e",
+              "parentSpanId": "000000000004950d",
+              "name": "retrieval.search",
+              "kind": 1,
+              "startTimeUnixNano": "1793529960080000000",
+              "endTimeUnixNano": "1793529960260000000",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "INTERMEDIATE search query; not the user request"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "INTERMEDIATE search hits; not the final answer"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "review.completed",
+                  "attributes": [
+                    {
+                      "key": "review.answer",
+                      "value": {
+                        "stringValue": "WRONG SPAN: this is retrieval output, not a final answer."
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000000bbb",
+              "spanId": "000000000004950f",
+              "parentSpanId": "000000000004950d",
+              "name": "review.retrieve_evidence",
+              "kind": 1,
+              "startTimeUnixNano": "1793529960300000000",
+              "endTimeUnixNano": "1793529960800000000",
+              "attributes": [
+                {
+                  "key": "review.context",
+                  "value": {
+                    "stringValue": "SYNTHETIC DOCUMENT §4: Give 30 days of written notice before cancelling the service."
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000000bbb",
+              "spanId": "0000000000049510",
+              "parentSpanId": "000000000004950d",
+              "name": "document.review.finalize",
+              "kind": 1,
+              "startTimeUnixNano": "1793529960900000000",
+              "endTimeUnixNano": "1793529963580000000",
+              "attributes": [
+                {
+                  "key": "review.phase",
+                  "value": {
+                    "stringValue": "final_answer"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "review.completed",
+                  "timeUnixNano": "1793529963550000000",
+                  "attributes": [
+                    {
+                      "key": "review.answer",
+                      "value": {
+                        "stringValue": "Only 10 days of notice is required [§4]."
+                      }
+                    },
+                    {
+                      "key": "review.citation.value",
+                      "value": {
+                        "doubleValue": 0.35
+                      }
+                    },
+                    {
+                      "key": "review.citation.provenance",
+                      "value": {
+                        "stringValue": "synthetic-fixture/citation-rubric-v1; authored example, no model call"
+                      }
+                    },
+                    {
+                      "key": "review.citation.reason",
+                      "value": {
+                        "stringValue": "The answer claims 10 days; the cited passage explicitly says 30 days."
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

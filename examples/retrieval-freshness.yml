@@ -1,0 +1,82 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Retrieval freshness · synthetic example
+  description: SYNTHETIC SCENARIO. Separate an answer’s recorded groundedness from source freshness
+    while excluding a same-name retrieval span from another service. All traces and supplied
+    judgments are authored fixtures; no production agent was measured.
+  domain: enterprise-search
+  agent: knowledge-assistant
+guidelines:
+  - id: source_freshness
+    title: Use sources no older than 24 hours
+    description: Read the explicit source age from knowledge-index. A grounded answer may still cite
+      stale material, and an absent age cannot be derived from the trace timestamp.
+  - id: source_identity
+    title: Select evidence from the intended service
+    description: Use retrieval.search from knowledge-index only. The same span name from stale-cache is
+      not the selected evidence source.
+dataset:
+  source: import
+  filters:
+    service: knowledge-assistant
+    environment: production
+    start: 2026-11-01T11:20:00.000Z
+    end: 2026-11-01T11:30:00.000Z
+    scenario: retrieval-freshness
+  sample:
+    strategy: recent
+    size: 3
+    minimum: 3
+  required:
+    - input
+    - output
+    - context
+  normalization:
+    profile: retrieval-resources-v1
+    version: 1.0.0
+scorers:
+  - ref: global/groundedness
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 0.85
+    weight: 35
+    enabled: true
+    critical: true
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+  - ref: domain/enterprise-search/source-freshness
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 24
+    weight: 20
+    enabled: true
+    critical: false
+review:
+  on_failure: true
+  sample_percent: 0
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

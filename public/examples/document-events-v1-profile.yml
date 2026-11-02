@@ -1,0 +1,65 @@
+# Profile documentation export. This prototype selects built-in profiles by exact ID/version; it does not execute imported profile definitions.
+apiVersion: tracegrade.dev/v1
+kind: NormalizationProfile
+id: document-events-v1
+version: 1.0.0
+name: Documents · final-answer event
+team: Document review
+description: Select the final response and citation judgment only from review.completed on the
+  unique document.review.finalize child span. Retrieve context only from review.retrieve_evidence.
+  Unrelated retrieval output is never treated as the final answer.
+fields:
+  - target: service
+    source: resource
+    attribute: service.name
+    format: text
+  - target: environment
+    source: resource
+    attribute: deployment.environment.name
+    format: text
+  - target: input
+    source: root
+    attribute: review.question
+    format: text
+  - target: model
+    source: root
+    attribute: review.model
+    format: text
+  - target: context
+    source: span
+    spanName: review.retrieve_evidence
+    attribute: review.context
+    format: text
+  - target: output
+    source: event
+    spanName: document.review.finalize
+    eventName: review.completed
+    attribute: review.answer
+    format: text
+  - target: costUsd
+    source: root
+    attribute: review.cost_usd
+    format: number
+    unit: usd
+    transform: Keep explicit USD; require a finite nonnegative number
+  - target: evaluatorScores.citation_accuracy.value
+    source: event
+    attribute: review.citation.value
+    format: score
+    unit: score
+    transform: Accept a numeric 0–1 value only with the mapped provenance
+    spanName: document.review.finalize
+    eventName: review.completed
+  - target: evaluatorScores.citation_accuracy.provenance
+    source: event
+    attribute: review.citation.provenance
+    format: text
+    spanName: document.review.finalize
+    eventName: review.completed
+  - target: evaluatorScores.citation_accuracy.reason
+    source: event
+    attribute: review.citation.reason
+    format: text
+    optional: true
+    spanName: document.review.finalize
+    eventName: review.completed

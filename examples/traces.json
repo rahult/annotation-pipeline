@@ -1,0 +1,168 @@
+[
+  {
+    "id": "qa-import-1",
+    "traceId": "4f8a0000000000000000000000000001",
+    "name": "Import QA 1",
+    "service": "support-agent",
+    "environment": "production",
+    "startedAt": "2026-11-02T13:05:22.863Z",
+    "durationMs": 1280,
+    "costUsd": 0.009,
+    "status": "ok",
+    "input": "I bought the annual plan 12 days ago. Can I get a refund?",
+    "output": "Your purchase is within the 14-day refund window. I can check your usage and send a refund request to our billing team for approval.",
+    "context": "Billing policy §4.2: annual plans are refundable within 14 days of purchase when usage is below 100 conversations. Refunds require billing-team approval.",
+    "expectedOutput": "Your purchase is within the 14-day refund window. I can check your usage and send a refund request to our billing team for approval.",
+    "model": "support-model-v2",
+    "tags": [
+      "billing",
+      "enterprise"
+    ],
+    "spans": [
+      {
+        "id": "000000000000a100",
+        "parentId": null,
+        "name": "support.resolve",
+        "type": "agent",
+        "durationMs": 1280,
+        "startMs": 0,
+        "status": "ok",
+        "attributes": {
+          "gen_ai.operation.name": "invoke_agent",
+          "gen_ai.agent.name": "Support agent"
+        }
+      },
+      {
+        "id": "000000000000b100",
+        "parentId": "000000000000a100",
+        "name": "knowledge.retrieve",
+        "type": "retrieval",
+        "durationMs": 180,
+        "startMs": 45,
+        "status": "ok",
+        "attributes": {
+          "retrieval.documents": 3,
+          "retrieval.collection": "support-policies"
+        }
+      },
+      {
+        "id": "000000000000c100",
+        "parentId": "000000000000a100",
+        "name": "billing.get_subscription",
+        "type": "tool",
+        "durationMs": 240,
+        "startMs": 310,
+        "status": "ok",
+        "attributes": {
+          "gen_ai.operation.name": "execute_tool",
+          "gen_ai.tool.name": "billing.get_subscription"
+        }
+      },
+      {
+        "id": "000000000000d100",
+        "parentId": "000000000000a100",
+        "name": "response.generate",
+        "type": "llm",
+        "durationMs": 580,
+        "startMs": 700,
+        "status": "ok",
+        "attributes": {
+          "gen_ai.request.model": "support-model-v2",
+          "gen_ai.usage.input_tokens": 780,
+          "gen_ai.usage.output_tokens": 80
+        }
+      }
+    ],
+    "attributes": {
+      "service.name": "support-agent",
+      "deployment.environment.name": "production",
+      "app.version": "3.4.0",
+      "customer.segment": "enterprise",
+      "session.id": "session_0001",
+      "eval.safety_score": 0.95
+    }
+  },
+  {
+    "id": "qa-import-2",
+    "traceId": "4f8a0000000000000000000000000002",
+    "name": "Import QA 2",
+    "service": "support-agent",
+    "environment": "production",
+    "startedAt": "2026-11-02T12:49:22.863Z",
+    "durationMs": 1417,
+    "costUsd": 0.0099,
+    "status": "ok",
+    "input": "I lost my authenticator and cannot sign in. How do I recover my account?",
+    "output": "Use the recovery link sent to your registered email. If you cannot access that address, I can connect you with security support to verify ownership.",
+    "context": "Security policy §2.1: verify ownership through the registered recovery email. Agents must not disable MFA directly. Escalate accounts without a recovery email to security support.",
+    "expectedOutput": "Use the recovery link sent to your registered email. If you cannot access that address, I can connect you with security support to verify ownership.",
+    "model": "support-model-v3",
+    "tags": [
+      "account",
+      "self-service"
+    ],
+    "spans": [
+      {
+        "id": "000000000000a101",
+        "parentId": null,
+        "name": "support.resolve",
+        "type": "agent",
+        "durationMs": 1417,
+        "startMs": 0,
+        "status": "ok",
+        "attributes": {
+          "gen_ai.operation.name": "invoke_agent",
+          "gen_ai.agent.name": "Support agent"
+        }
+      },
+      {
+        "id": "000000000000b101",
+        "parentId": "000000000000a101",
+        "name": "knowledge.retrieve",
+        "type": "retrieval",
+        "durationMs": 183,
+        "startMs": 45,
+        "status": "ok",
+        "attributes": {
+          "retrieval.documents": 3,
+          "retrieval.collection": "support-policies"
+        }
+      },
+      {
+        "id": "000000000000c101",
+        "parentId": "000000000000a101",
+        "name": "identity.send_recovery_link",
+        "type": "tool",
+        "durationMs": 247,
+        "startMs": 310,
+        "status": "ok",
+        "attributes": {
+          "gen_ai.operation.name": "execute_tool",
+          "gen_ai.tool.name": "identity.send_recovery_link"
+        }
+      },
+      {
+        "id": "000000000000d101",
+        "parentId": "000000000000a101",
+        "name": "response.generate",
+        "type": "llm",
+        "durationMs": 717,
+        "startMs": 700,
+        "status": "ok",
+        "attributes": {
+          "gen_ai.request.model": "support-model-v3",
+          "gen_ai.usage.input_tokens": 797,
+          "gen_ai.usage.output_tokens": 83
+        }
+      }
+    ],
+    "attributes": {
+      "service.name": "support-agent",
+      "deployment.environment.name": "production",
+      "app.version": "3.4.0",
+      "customer.segment": "self-service",
+      "session.id": "session_0002",
+      "eval.safety_score": 0.95
+    }
+  }
+]

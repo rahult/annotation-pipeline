@@ -1,0 +1,66 @@
+# Profile documentation export. This prototype selects built-in profiles by exact ID/version; it does not execute imported profile definitions.
+apiVersion: tracegrade.dev/v1
+kind: NormalizationProfile
+id: retrieval-resources-v1
+version: 1.0.0
+name: Retrieval · resource-qualified evidence
+team: Knowledge platform
+description: Read the final answer and supplied groundedness judgment from the root. Select context
+  and recorded source age only from retrieval.search emitted by knowledge-index; a same-name
+  stale-cache span is excluded by its resource service.
+fields:
+  - target: service
+    source: resource
+    attribute: service.name
+    format: text
+  - target: environment
+    source: resource
+    attribute: deployment.environment.name
+    format: text
+  - target: input
+    source: root
+    attribute: rag.question
+    format: text
+  - target: output
+    source: root
+    attribute: rag.answer
+    format: text
+  - target: model
+    source: root
+    attribute: rag.model
+    format: text
+  - target: costUsd
+    source: root
+    attribute: rag.total_cost_usd
+    format: number
+    unit: usd
+    transform: Keep explicit USD; require a finite nonnegative number
+  - target: evaluatorScores.groundedness.value
+    source: root
+    attribute: rag.groundedness.value
+    format: score
+    unit: score
+    transform: Accept a numeric 0–1 value only with the mapped provenance
+  - target: evaluatorScores.groundedness.provenance
+    source: root
+    attribute: rag.groundedness.provenance
+    format: text
+  - target: evaluatorScores.groundedness.reason
+    source: root
+    attribute: rag.groundedness.reason
+    format: text
+    optional: true
+  - target: context
+    source: span
+    spanName: retrieval.search
+    serviceName: knowledge-index
+    attribute: rag.context
+    format: text
+  - target: attributes.retrieval.source_age_hours
+    source: span
+    spanName: retrieval.search
+    serviceName: knowledge-index
+    attribute: rag.source_age_hours
+    format: number
+    unit: number
+    transform: Copy explicit nonnegative source age in hours; do not infer it from timestamps

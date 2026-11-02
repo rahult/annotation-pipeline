@@ -1,0 +1,80 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Checkout reliability · synthetic example
+  description: SYNTHETIC SCENARIO. Find a retry regression while making missing costs and unknown tool
+    outcomes visible instead of counting them as successes. All traces and supplied judgments are
+    authored fixtures; no production agent was measured.
+  domain: commerce
+  agent: checkout-orchestrator
+guidelines:
+  - id: checkout_evidence
+    title: Require complete operational evidence
+    description: Explicit cost and tool outcome telemetry must be present. Missing evidence does not
+      count as a successful checkout.
+  - id: checkout_budget
+    title: Respect the payment retry budget
+    description: Keep each checkout within two recorded payment attempts and the response latency limit.
+dataset:
+  source: import
+  filters:
+    service: checkout-orchestrator
+    environment: production
+    start: 2026-11-01T10:00:00.000Z
+    end: 2026-11-01T10:50:00.000Z
+    scenario: checkout-reliability
+  sample:
+    strategy: recent
+    size: 4
+    minimum: 3
+  required:
+    - input
+    - output
+  normalization:
+    profile: checkout-shop-v1
+    version: 1.0.0
+scorers:
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+  - ref: global/tool-success
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 100
+    weight: 15
+    enabled: true
+    critical: false
+  - ref: agent/checkout-orchestrator/payment-attempt-budget
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 2
+    weight: 15
+    enabled: true
+    critical: false
+review:
+  on_failure: true
+  sample_percent: 0
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

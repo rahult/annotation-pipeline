@@ -1,0 +1,913 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tracegrade:evaluation:v1",
+  "title": "Tracegrade evaluation specification",
+  "description": "Declarative evaluation configuration. This schema does not create a backend connection, model judge, or scheduled worker. Dataset availability is checked separately at execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "tracegrade.dev/v1",
+      "type": "string"
+    },
+    "kind": {
+      "const": "Evaluation",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "guidelines": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/guideline"
+      }
+    },
+    "dataset": {
+      "$ref": "#/$defs/dataset"
+    },
+    "scorers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "$ref": "#/$defs/scorer"
+      },
+      "description": "Inline scorer definitions or exact catalog references. At least one resolved scorer must be enabled."
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_failure": {
+          "type": "boolean"
+        },
+        "sample_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "on_failure",
+        "sample_percent"
+      ]
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minimum_pass_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "minimum_pass_rate"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "on_import",
+            "scheduled"
+          ]
+        },
+        "schedule": {
+          "type": "string",
+          "enum": [
+            "hourly",
+            "daily",
+            "weekly"
+          ]
+        }
+      },
+      "required": [
+        "trigger"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "trigger": {
+                "const": "scheduled"
+              }
+            },
+            "required": [
+              "trigger"
+            ]
+          },
+          "then": {
+            "required": [
+              "schedule"
+            ]
+          }
+        }
+      ]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "html",
+            "csv",
+            "json"
+          ]
+        }
+      },
+      "required": [
+        "format"
+      ]
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "guidelines",
+    "dataset",
+    "scorers",
+    "review",
+    "release",
+    "execution",
+    "report"
+  ],
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "domain": {
+          "type": "string",
+          "maxLength": 120,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_-]*$"
+        },
+        "agent": {
+          "type": "string",
+          "maxLength": 120,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9_-]*$"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "guideline": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 240,
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 20000
+        }
+      },
+      "required": [
+        "id",
+        "title"
+      ]
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "demo",
+            "import"
+          ]
+        },
+        "filters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "service": {
+              "type": "string",
+              "maxLength": 250,
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "environment": {
+              "type": "string",
+              "maxLength": 250,
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "start": {
+              "type": "string",
+              "maxLength": 40,
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "maxLength": 40,
+              "format": "date-time"
+            },
+            "scenario": {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+              "description": "Explicit synthetic fixture cohort. Requires tracegrade.synthetic=true and the exact tracegrade.scenario attribute. Omit for ordinary evaluations."
+            }
+          },
+          "required": [
+            "service",
+            "environment"
+          ]
+        },
+        "sample": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "recent",
+                "errors_first"
+              ]
+            },
+            "size": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000,
+              "description": "Must not exceed sample.size."
+            }
+          },
+          "required": [
+            "strategy",
+            "size",
+            "minimum"
+          ]
+        },
+        "required": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "input",
+              "output",
+              "context"
+            ]
+          }
+        },
+        "normalization": {
+          "$ref": "#/$defs/normalization"
+        }
+      },
+      "required": [
+        "source",
+        "filters",
+        "sample",
+        "required"
+      ]
+    },
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "type": "string",
+          "enum": [
+            "support-genai-v1",
+            "checkout-shop-v1",
+            "document-events-v1",
+            "handoff-services-v1",
+            "retrieval-resources-v1",
+            "streaming-final-v1"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "The exact built-in trace mapping version. Omit dataset.normalization for legacy automatic mapping."
+        }
+      },
+      "required": [
+        "profile",
+        "version"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "profile": {
+                "const": "support-genai-v1"
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "profile": {
+                "const": "checkout-shop-v1"
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "profile": {
+                "const": "document-events-v1"
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "profile": {
+                "const": "handoff-services-v1"
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "profile": {
+                "const": "retrieval-resources-v1"
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "profile": {
+                "const": "streaming-final-v1"
+              }
+            },
+            "required": [
+              "profile"
+            ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "type": "string",
+                "enum": [
+                  "1.0.0"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "scorer": {
+      "if": {
+        "type": "object",
+        "required": [
+          "ref"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/scorerReference"
+      },
+      "else": {
+        "$ref": "#/$defs/inlineScorer"
+      }
+    },
+    "scorerReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "maxLength": 400,
+          "minLength": 1,
+          "pattern": "^(?:global/[a-z0-9][a-z0-9_-]*|(?:domain|agent)/[a-z0-9][a-z0-9_-]*/[a-z0-9][a-z0-9_-]*)$"
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 40,
+          "minLength": 1,
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "An exact immutable catalog release. latest and version ranges are not supported."
+        },
+        "threshold": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator": {
+              "type": "string",
+              "enum": [
+                "gte",
+                "lte"
+              ]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "operator",
+            "value"
+          ]
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000000
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "critical": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ref",
+        "version"
+      ]
+    },
+    "inlineScorer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 10000
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "recorded_judgment",
+            "latency",
+            "cost",
+            "tool_success",
+            "contains",
+            "attribute"
+          ]
+        },
+        "threshold": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operator": {
+              "type": "string",
+              "enum": [
+                "gte",
+                "lte"
+              ]
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "operator",
+            "value"
+          ]
+        },
+        "weight": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1000000
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "critical": {
+          "type": "boolean"
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "score",
+            "ms",
+            "usd",
+            "percent",
+            "number"
+          ]
+        },
+        "attribute": {
+          "type": "string",
+          "maxLength": 250,
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "phrase": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "judgment_key": {
+          "type": "string",
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "^(?!constructor$|prototype$)[A-Za-z0-9][A-Za-z0-9_.:/-]{0,159}$"
+        },
+        "rubric": {
+          "type": "string",
+          "maxLength": 20000
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "threshold",
+        "weight",
+        "enabled",
+        "critical",
+        "unit"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "recorded_judgment"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^(?:groundedness|relevance|judgment_[a-zA-Z0-9_-]+)$"
+              },
+              "unit": {
+                "const": "score"
+              },
+              "attribute": false,
+              "phrase": false,
+              "judgment_key": {
+                "type": "string",
+                "maxLength": 160,
+                "minLength": 1,
+                "pattern": "^(?!constructor$|prototype$)[A-Za-z0-9][A-Za-z0-9_.:/-]{0,159}$"
+              },
+              "rubric": {
+                "type": "string",
+                "maxLength": 20000
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "latency"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "const": "latency"
+              },
+              "unit": {
+                "const": "ms"
+              },
+              "attribute": false,
+              "phrase": false,
+              "judgment_key": false,
+              "rubric": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "cost"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "const": "cost"
+              },
+              "unit": {
+                "const": "usd"
+              },
+              "attribute": false,
+              "phrase": false,
+              "judgment_key": false,
+              "rubric": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "tool_success"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "const": "tool_success"
+              },
+              "unit": {
+                "const": "percent"
+              },
+              "attribute": false,
+              "phrase": false,
+              "judgment_key": false,
+              "rubric": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "contains"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^contains(?:_[a-zA-Z0-9_-]+)?$"
+              },
+              "unit": {
+                "const": "score"
+              },
+              "attribute": false,
+              "phrase": {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "judgment_key": false,
+              "rubric": false
+            },
+            "required": [
+              "phrase"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "attribute"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "id": {
+                "pattern": "^attribute_[a-zA-Z0-9_-]+$"
+              },
+              "attribute": {
+                "type": "string",
+                "maxLength": 250,
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "phrase": false,
+              "judgment_key": false,
+              "rubric": false
+            },
+            "required": [
+              "attribute"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "recorded_judgment"
+              },
+              "id": {
+                "pattern": "^judgment_"
+              }
+            },
+            "required": [
+              "type",
+              "id"
+            ]
+          },
+          "then": {
+            "required": [
+              "judgment_key"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "enum": [
+                  "groundedness",
+                  "relevance"
+                ]
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "judgment_key": false,
+              "rubric": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "unit": {
+                "const": "score"
+              }
+            },
+            "required": [
+              "unit"
+            ]
+          },
+          "then": {
+            "properties": {
+              "threshold": {
+                "properties": {
+                  "value": {
+                    "maximum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "unit": {
+                "const": "percent"
+              }
+            },
+            "required": [
+              "unit"
+            ]
+          },
+          "then": {
+            "properties": {
+              "threshold": {
+                "properties": {
+                  "value": {
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "streaming-assistant"
+            }
+          },
+          {
+            "key": "deployment.environment.name",
+            "value": {
+              "stringValue": "production"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": "synthetic-1.0.0"
+            }
+          }
+        ]
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "synthetic.streaming.assistant",
+            "version": "1.0.0"
+          },
+          "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+          "spans": [
+            {
+              "traceId": "00000000000000000000000000001771",
+              "spanId": "0000000000092825",
+              "name": "stream.respond · Fast complete stream",
+              "kind": 2,
+              "startTimeUnixNano": "1793533200000000000",
+              "endTimeUnixNano": "1793533202200000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "streaming-completion"
+                  }
+                },
+                {
+                  "key": "stream.request",
+                  "value": {
+                    "stringValue": "Explain the sample workspace export in one sentence."
+                  }
+                },
+                {
+                  "key": "stream.context",
+                  "value": {
+                    "stringValue": "SYNTHETIC CONTEXT: Configuration and evidence are saved locally. A stream.completed event records the final answer; chunks do not prove completion."
+                  }
+                },
+                {
+                  "key": "stream.model",
+                  "value": {
+                    "stringValue": "synthetic-streaming-model"
+                  }
+                },
+                {
+                  "key": "stream.cost_usd",
+                  "value": {
+                    "doubleValue": 0.009
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000001772",
+              "spanId": "0000000000092889",
+              "name": "stream.respond · Late first token",
+              "kind": 2,
+              "startTimeUnixNano": "1793533380000000000",
+              "endTimeUnixNano": "1793533383000000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "streaming-completion"
+                  }
+                },
+                {
+                  "key": "stream.request",
+                  "value": {
+                    "stringValue": "Explain where a sample evaluation stores its evidence."
+                  }
+                },
+                {
+                  "key": "stream.context",
+                  "value": {
+                    "stringValue": "SYNTHETIC CONTEXT: Configuration and evidence are saved locally. A stream.completed event records the final answer; chunks do not prove completion."
+                  }
+                },
+                {
+                  "key": "stream.model",
+                  "value": {
+                    "stringValue": "synthetic-streaming-model"
+                  }
+                },
+                {
+                  "key": "stream.cost_usd",
+                  "value": {
+                    "doubleValue": 0.012
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            },
+            {
+              "traceId": "00000000000000000000000000001773",
+              "spanId": "00000000000928ed",
+              "name": "stream.respond · Interrupted stream",
+              "kind": 2,
+              "startTimeUnixNano": "1793533560000000000",
+              "endTimeUnixNano": "1793533561400000000",
+              "attributes": [
+                {
+                  "key": "tracegrade.synthetic",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "tracegrade.scenario",
+                  "value": {
+                    "stringValue": "streaming-completion"
+                  }
+                },
+                {
+                  "key": "stream.request",
+                  "value": {
+                    "stringValue": "Explain how the sample completion receipt works."
+                  }
+                },
+                {
+                  "key": "stream.context",
+                  "value": {
+                    "stringValue": "SYNTHETIC CONTEXT: Configuration and evidence are saved locally. A stream.completed event records the final answer; chunks do not prove completion."
+                  }
+                },
+                {
+                  "key": "stream.model",
+                  "value": {
+                    "stringValue": "synthetic-streaming-model"
+                  }
+                },
+                {
+                  "key": "stream.cost_usd",
+                  "value": {
+                    "doubleValue": 0.006
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "stream-gateway"
+            }
+          },
+          {
+            "key": "deployment.environment.name",
+            "value": {
+              "stringValue": "production"
+            }
+          },
+          {
+            "key": "service.version",
+            "value": {
+              "stringValue": "synthetic-1.0.0"
+            }
+          }
+        ]
+      },
+      "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "synthetic.streaming.gateway",
+            "version": "1.0.0"
+          },
+          "schemaUrl": "https://opentelemetry.io/schemas/1.27.0",
+          "spans": [
+            {
+              "traceId": "00000000000000000000000000001771",
+              "spanId": "0000000000092826",
+              "parentSpanId": "0000000000092825",
+              "name": "chat.stream",
+              "kind": 1,
+              "startTimeUnixNano": "1793533200080000000",
+              "endTimeUnixNano": "1793533202180000000",
+              "attributes": [
+                {
+                  "key": "stream.ttft_ms",
+                  "value": {
+                    "intValue": "420"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "stream.chunk",
+                  "timeUnixNano": "1793533200420000000",
+                  "attributes": [
+                    {
+                      "key": "stream.chunk_text",
+                      "value": {
+                        "stringValue": "The sample workspace export contains the"
+                      }
+                    },
+                    {
+                      "key": "stream.chunk_index",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "stream.chunk",
+                  "timeUnixNano": "1793533200580000000",
+                  "attributes": [
+                    {
+                      "key": "stream.chunk_text",
+                      "value": {
+                        "stringValue": " saved configuration and trace evidence."
+                      }
+                    },
+                    {
+                      "key": "stream.chunk_index",
+                      "value": {
+                        "intValue": "1"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "stream.completed",
+                  "timeUnixNano": "1793533202160000000",
+                  "attributes": [
+                    {
+                      "key": "stream.final_text",
+                      "value": {
+                        "stringValue": "The sample workspace export contains the saved configuration and trace evidence."
+                      }
+                    },
+                    {
+                      "key": "stream.completion_count",
+                      "value": {
+                        "intValue": "1"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000001772",
+              "spanId": "000000000009288a",
+              "parentSpanId": "0000000000092889",
+              "name": "chat.stream",
+              "kind": 1,
+              "startTimeUnixNano": "1793533380080000000",
+              "endTimeUnixNano": "1793533382980000000",
+              "attributes": [
+                {
+                  "key": "stream.ttft_ms",
+                  "value": {
+                    "intValue": "1250"
+                  }
+                }
+              ],
+              "status": {
+                "code": 1
+              },
+              "events": [
+                {
+                  "name": "stream.chunk",
+                  "timeUnixNano": "1793533381250000000",
+                  "attributes": [
+                    {
+                      "key": "stream.chunk_text",
+                      "value": {
+                        "stringValue": "A sample evaluation stores a frozen snapshot o"
+                      }
+                    },
+                    {
+                      "key": "stream.chunk_index",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "stream.chunk",
+                  "timeUnixNano": "1793533381410000000",
+                  "attributes": [
+                    {
+                      "key": "stream.chunk_text",
+                      "value": {
+                        "stringValue": "f the selected traces and scorer definitions."
+                      }
+                    },
+                    {
+                      "key": "stream.chunk_index",
+                      "value": {
+                        "intValue": "1"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "stream.completed",
+                  "timeUnixNano": "1793533382960000000",
+                  "attributes": [
+                    {
+                      "key": "stream.final_text",
+                      "value": {
+                        "stringValue": "A sample evaluation stores a frozen snapshot of the selected traces and scorer definitions."
+                      }
+                    },
+                    {
+                      "key": "stream.completion_count",
+                      "value": {
+                        "intValue": "1"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "traceId": "00000000000000000000000000001773",
+              "spanId": "00000000000928ee",
+              "parentSpanId": "00000000000928ed",
+              "name": "chat.stream",
+              "kind": 1,
+              "startTimeUnixNano": "1793533560080000000",
+              "endTimeUnixNano": "1793533561380000000",
+              "attributes": [
+                {
+                  "key": "stream.ttft_ms",
+                  "value": {
+                    "intValue": "510"
+                  }
+                }
+              ],
+              "status": {
+                "code": 0
+              },
+              "events": [
+                {
+                  "name": "stream.chunk",
+                  "timeUnixNano": "1793533560510000000",
+                  "attributes": [
+                    {
+                      "key": "stream.chunk_text",
+                      "value": {
+                        "stringValue": "The receipt is recorded only"
+                      }
+                    },
+                    {
+                      "key": "stream.chunk_index",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "stream.chunk",
+                  "timeUnixNano": "1793533560670000000",
+                  "attributes": [
+                    {
+                      "key": "stream.chunk_text",
+                      "value": {
+                        "stringValue": " when the stream completes."
+                      }
+                    },
+                    {
+                      "key": "stream.chunk_index",
+                      "value": {
+                        "intValue": "1"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

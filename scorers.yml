@@ -1,0 +1,571 @@
+# Tracegrade scorer catalog. Evaluations pin exact published versions.
+apiVersion: tracegrade.dev/v1
+kind: ScorerCatalog
+scorers:
+  - id: global/groundedness
+    scope: global
+    target: ""
+    slug: groundedness
+    name: Groundedness
+    description: Is each material claim supported by the retrieved context? Demo fixtures until a judge
+      is connected.
+    owner: Evaluation platform
+    tags:
+      - quality
+      - recorded-judgment
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial reusable scorer definition. Demo semantic scores are recorded fixtures.
+        definition:
+          scope: global
+          target: ""
+          slug: groundedness
+          name: Groundedness
+          description: Is each material claim supported by the retrieved context? Demo fixtures until a judge
+            is connected.
+          owner: Evaluation platform
+          tags:
+            - quality
+            - recorded-judgment
+          type: recorded_judgment
+          unit: score
+          metricId: groundedness
+          threshold: 0.85
+          operator: gte
+          weight: 35
+          critical: true
+          judgmentKey: groundedness
+          rubric: Assess whether each material claim is supported by supplied context. Supply a 0–1 result and
+            evaluator provenance.
+    draft: null
+    deprecated: false
+  - id: global/answer-relevance
+    scope: global
+    target: ""
+    slug: answer-relevance
+    name: Answer relevance
+    description: Does the response directly address the customer request? Demo fixtures until a judge is
+      connected.
+    owner: Evaluation platform
+    tags:
+      - quality
+      - recorded-judgment
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial reusable scorer definition. Demo semantic scores are recorded fixtures.
+        definition:
+          scope: global
+          target: ""
+          slug: answer-relevance
+          name: Answer relevance
+          description: Does the response directly address the customer request? Demo fixtures until a judge is
+            connected.
+          owner: Evaluation platform
+          tags:
+            - quality
+            - recorded-judgment
+          type: recorded_judgment
+          unit: score
+          metricId: relevance
+          threshold: 0.8
+          operator: gte
+          weight: 25
+          critical: false
+          judgmentKey: relevance
+          rubric: Assess whether the final answer addresses the stated user request. Supply a 0–1 result and
+            evaluator provenance.
+    draft: null
+    deprecated: false
+  - id: global/response-latency
+    scope: global
+    target: ""
+    slug: response-latency
+    name: Response latency
+    description: End-to-end trace duration in milliseconds, tested independently for every trace.
+    owner: Evaluation platform
+    tags:
+      - operations
+      - deterministic
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial reusable scorer definition. Demo semantic scores are recorded fixtures.
+        definition:
+          scope: global
+          target: ""
+          slug: response-latency
+          name: Response latency
+          description: End-to-end trace duration in milliseconds, tested independently for every trace.
+          owner: Evaluation platform
+          tags:
+            - operations
+            - deterministic
+          type: latency
+          unit: ms
+          metricId: latency
+          threshold: 4000
+          operator: lte
+          weight: 20
+          critical: false
+    draft: null
+    deprecated: false
+  - id: global/tool-success
+    scope: global
+    target: ""
+    slug: tool-success
+    name: Tool success
+    description: Percentage of recorded tool calls with successful outcomes.
+    owner: Evaluation platform
+    tags:
+      - operations
+      - deterministic
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial reusable scorer definition. Demo semantic scores are recorded fixtures.
+        definition:
+          scope: global
+          target: ""
+          slug: tool-success
+          name: Tool success
+          description: Percentage of recorded tool calls with successful outcomes.
+          owner: Evaluation platform
+          tags:
+            - operations
+            - deterministic
+          type: tool_success
+          unit: percent
+          metricId: tool_success
+          threshold: 100
+          operator: gte
+          weight: 15
+          critical: false
+    draft: null
+    deprecated: false
+  - id: global/cost-per-response
+    scope: global
+    target: ""
+    slug: cost-per-response
+    name: Cost per response
+    description: Explicitly recorded cost per trace in USD; never inferred from model names.
+    owner: Evaluation platform
+    tags:
+      - operations
+      - deterministic
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial reusable scorer definition. Demo semantic scores are recorded fixtures.
+        definition:
+          scope: global
+          target: ""
+          slug: cost-per-response
+          name: Cost per response
+          description: Explicitly recorded cost per trace in USD; never inferred from model names.
+          owner: Evaluation platform
+          tags:
+            - operations
+            - deterministic
+          type: cost
+          unit: usd
+          metricId: cost
+          threshold: 0.03
+          operator: lte
+          weight: 5
+          critical: false
+    draft: null
+    deprecated: false
+  - id: domain/customer-support/escalation-language
+    scope: domain
+    target: customer-support
+    slug: escalation-language
+    name: Escalation language
+    description: Check for the configured human-support phrase in the final response. This is a literal
+      check, not semantic escalation verification.
+    owner: Customer support quality
+    tags:
+      - support
+      - escalation
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial scoped definition; scope and evidence requirements are explicit.
+        definition:
+          scope: domain
+          target: customer-support
+          slug: escalation-language
+          name: Escalation language
+          description: Check for the configured human-support phrase in the final response. This is a literal
+            check, not semantic escalation verification.
+          owner: Customer support quality
+          tags:
+            - support
+            - escalation
+          type: contains
+          unit: score
+          keyword: support
+          threshold: 1
+          operator: gte
+          weight: 10
+          critical: false
+    draft: null
+    deprecated: false
+  - id: domain/customer-support/policy-compliance
+    scope: domain
+    target: customer-support
+    slug: policy-compliance
+    name: Policy compliance
+    description: Use a recorded policy judgment supplied by your evaluator; absent judgments remain unscored.
+    owner: Customer support quality
+    tags:
+      - support
+      - policy
+      - recorded-judgment
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial scoped definition; scope and evidence requirements are explicit.
+        definition:
+          scope: domain
+          target: customer-support
+          slug: policy-compliance
+          name: Policy compliance
+          description: Use a recorded policy judgment supplied by your evaluator; absent judgments remain
+            unscored.
+          owner: Customer support quality
+          tags:
+            - support
+            - policy
+            - recorded-judgment
+          type: recorded_judgment
+          unit: score
+          judgmentKey: policy_compliance
+          rubric: Check whether actions and claims comply with the supplied support policy. Record supporting
+            evidence and a 0–1 score; do not invent an authorization.
+          threshold: 0.9
+          operator: gte
+          weight: 20
+          critical: true
+    draft: null
+    deprecated: false
+  - id: domain/document-review/citation-accuracy
+    scope: domain
+    target: document-review
+    slug: citation-accuracy
+    name: Citation accuracy
+    description: Use an externally recorded citation-accuracy judgment for document review.
+    owner: Document review quality
+    tags:
+      - documents
+      - citations
+      - recorded-judgment
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial scoped definition; scope and evidence requirements are explicit.
+        definition:
+          scope: domain
+          target: document-review
+          slug: citation-accuracy
+          name: Citation accuracy
+          description: Use an externally recorded citation-accuracy judgment for document review.
+          owner: Document review quality
+          tags:
+            - documents
+            - citations
+            - recorded-judgment
+          type: recorded_judgment
+          unit: score
+          judgmentKey: citation_accuracy
+          rubric: Verify that cited text supports each material finding and comes from the referenced
+            document. Supply the evaluated score with provenance.
+          threshold: 0.95
+          operator: gte
+          weight: 25
+          critical: true
+    draft: null
+    deprecated: false
+  - id: agent/support-agent/tool-outcome-validity
+    scope: agent
+    target: support-agent
+    slug: tool-outcome-validity
+    name: Tool outcome validity
+    description: Evaluate the recorded percentage of tool calls with explicit successful outcomes.
+    owner: Support agent team
+    tags:
+      - tools
+      - agent
+      - deterministic
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial scoped definition; scope and evidence requirements are explicit.
+        definition:
+          scope: agent
+          target: support-agent
+          slug: tool-outcome-validity
+          name: Tool outcome validity
+          description: Evaluate the recorded percentage of tool calls with explicit successful outcomes.
+          owner: Support agent team
+          tags:
+            - tools
+            - agent
+            - deterministic
+          type: attribute
+          unit: percent
+          attributeKey: agent.tool_success_percent
+          threshold: 100
+          operator: gte
+          weight: 15
+          critical: false
+    draft: null
+    deprecated: false
+  - id: agent/support-agent/retrieval-confidence
+    scope: agent
+    target: support-agent
+    slug: retrieval-confidence
+    name: Retrieval confidence
+    description: Draft requirement for a measured retrieval-confidence attribute. Publish only after
+      validating that the source emits it.
+    owner: Support agent team
+    tags:
+      - retrieval
+      - draft
+    versions: []
+    draft:
+      scope: agent
+      target: support-agent
+      slug: retrieval-confidence
+      name: Retrieval confidence
+      description: Draft requirement for a measured retrieval-confidence attribute. Publish only after
+        validating that the source emits it.
+      owner: Support agent team
+      tags:
+        - retrieval
+        - draft
+      type: attribute
+      unit: score
+      attributeKey: retrieval.confidence
+      threshold: 0.85
+      operator: gte
+      weight: 10
+      critical: false
+    deprecated: false
+  - id: agent/checkout-orchestrator/payment-attempt-budget
+    scope: agent
+    target: checkout-orchestrator
+    slug: payment-attempt-budget
+    name: Payment attempt budget
+    description: Check the explicitly mapped count of payment authorization attempts for each checkout trace.
+    owner: Commerce engineering
+    tags:
+      - checkout
+      - reliability
+      - synthetic-example
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: "Synthetic scenario: explicit payment-attempt telemetry, maximum two attempts."
+        definition:
+          scope: agent
+          target: checkout-orchestrator
+          slug: payment-attempt-budget
+          name: Payment attempt budget
+          description: Check the explicitly mapped count of payment authorization attempts for each checkout
+            trace.
+          owner: Commerce engineering
+          tags:
+            - checkout
+            - reliability
+            - synthetic-example
+          type: attribute
+          unit: number
+          attributeKey: checkout.payment_attempts
+          threshold: 2
+          operator: lte
+          weight: 15
+          critical: false
+    draft: null
+    deprecated: false
+  - id: domain/it-operations/handoff-completeness
+    scope: domain
+    target: it-operations
+    slug: handoff-completeness
+    name: Handoff completeness
+    description: Read the supplied judgment that approval requirements and access scope reached the
+      final specialist.
+    owner: IT operations
+    tags:
+      - handoff
+      - context
+      - synthetic-example
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial synthetic scenario rule; exact input mapping and evaluation units are explicit.
+        definition:
+          scope: domain
+          target: it-operations
+          slug: handoff-completeness
+          name: Handoff completeness
+          description: Read the supplied judgment that approval requirements and access scope reached the
+            final specialist.
+          owner: IT operations
+          tags:
+            - handoff
+            - context
+            - synthetic-example
+          type: recorded_judgment
+          unit: score
+          judgmentKey: handoff_completeness
+          rubric: Check that the final specialist received and respected identity, approval, and requested
+            access scope. Require recorded evaluator provenance; this catalog does not call a model.
+          threshold: 0.9
+          operator: gte
+          weight: 35
+          critical: true
+    draft: null
+    deprecated: false
+  - id: agent/service-desk-coordinator/handoff-budget
+    scope: agent
+    target: service-desk-coordinator
+    slug: handoff-budget
+    name: Handoff budget
+    description: Check the explicitly recorded number of coordinator handoffs.
+    owner: IT operations
+    tags:
+      - handoff
+      - routing
+      - synthetic-example
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial synthetic scenario rule; exact input mapping and evaluation units are explicit.
+        definition:
+          scope: agent
+          target: service-desk-coordinator
+          slug: handoff-budget
+          name: Handoff budget
+          description: Check the explicitly recorded number of coordinator handoffs.
+          owner: IT operations
+          tags:
+            - handoff
+            - routing
+            - synthetic-example
+          type: attribute
+          unit: number
+          attributeKey: handoff.count
+          threshold: 2
+          operator: lte
+          weight: 15
+          critical: false
+    draft: null
+    deprecated: false
+  - id: domain/enterprise-search/source-freshness
+    scope: domain
+    target: enterprise-search
+    slug: source-freshness
+    name: Source age (hours)
+    description: Check explicit source age in hours from the selected knowledge-index retrieval span.
+    owner: Knowledge platform
+    tags:
+      - retrieval
+      - freshness
+      - synthetic-example
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial synthetic scenario rule; exact input mapping and evaluation units are explicit.
+        definition:
+          scope: domain
+          target: enterprise-search
+          slug: source-freshness
+          name: Source age (hours)
+          description: Check explicit source age in hours from the selected knowledge-index retrieval span.
+          owner: Knowledge platform
+          tags:
+            - retrieval
+            - freshness
+            - synthetic-example
+          type: attribute
+          unit: number
+          attributeKey: retrieval.source_age_hours
+          threshold: 24
+          operator: lte
+          weight: 20
+          critical: false
+    draft: null
+    deprecated: false
+  - id: agent/streaming-assistant/first-token-latency
+    scope: agent
+    target: streaming-assistant
+    slug: first-token-latency
+    name: First-token latency
+    description: Check the explicitly recorded time to first token from stream-gateway in milliseconds.
+    owner: Conversation platform
+    tags:
+      - streaming
+      - latency
+      - synthetic-example
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial synthetic scenario rule; exact input mapping and evaluation units are explicit.
+        definition:
+          scope: agent
+          target: streaming-assistant
+          slug: first-token-latency
+          name: First-token latency
+          description: Check the explicitly recorded time to first token from stream-gateway in milliseconds.
+          owner: Conversation platform
+          tags:
+            - streaming
+            - latency
+            - synthetic-example
+          type: attribute
+          unit: ms
+          attributeKey: stream.ttft_ms
+          threshold: 800
+          operator: lte
+          weight: 20
+          critical: false
+    draft: null
+    deprecated: false
+  - id: agent/streaming-assistant/completion-receipt
+    scope: agent
+    target: streaming-assistant
+    slug: completion-receipt
+    name: Completion receipt
+    description: Require an explicit completion count from stream.completed; chunk events are not receipts.
+    owner: Conversation platform
+    tags:
+      - streaming
+      - completion
+      - synthetic-example
+    versions:
+      - version: 1.0.0
+        publishedAt: 2026-11-01T09:00:00.000Z
+        changeNote: Initial synthetic scenario rule; exact input mapping and evaluation units are explicit.
+        definition:
+          scope: agent
+          target: streaming-assistant
+          slug: completion-receipt
+          name: Completion receipt
+          description: Require an explicit completion count from stream.completed; chunk events are not
+            receipts.
+          owner: Conversation platform
+          tags:
+            - streaming
+            - completion
+            - synthetic-example
+          type: attribute
+          unit: number
+          attributeKey: stream.completion_receipt
+          threshold: 1
+          operator: gte
+          weight: 20
+          critical: true
+    draft: null
+    deprecated: false

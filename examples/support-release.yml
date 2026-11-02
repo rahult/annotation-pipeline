@@ -1,0 +1,73 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Support release · synthetic example
+  description: SYNTHETIC SCENARIO. Decide whether a support copilot is ready to release when
+    reassuring answers conceal an unauthorized refund promise. All traces and supplied judgments are
+    authored fixtures; no production agent was measured.
+  domain: customer-support
+  agent: support-copilot
+guidelines:
+  - id: policy_authority
+    title: Keep actions within authority
+    description: Refund eligibility is not a completed refund. Billing approval must precede any refund promise.
+  - id: policy_grounding
+    title: Honor the supplied support policy
+    description: Account changes require verification; cancellation must retain the paid access
+      described in the policy.
+dataset:
+  source: import
+  filters:
+    service: support-copilot
+    environment: production
+    start: 2026-11-01T10:00:00.000Z
+    end: 2026-11-01T10:50:00.000Z
+    scenario: support-release
+  sample:
+    strategy: recent
+    size: 4
+    minimum: 3
+  required:
+    - input
+    - output
+    - context
+  normalization:
+    profile: support-genai-v1
+    version: 1.0.0
+scorers:
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+  - ref: domain/customer-support/policy-compliance
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 0.9
+    weight: 20
+    enabled: true
+    critical: true
+review:
+  on_failure: true
+  sample_percent: 0
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

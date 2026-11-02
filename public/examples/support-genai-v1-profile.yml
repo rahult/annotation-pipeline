@@ -1,0 +1,58 @@
+# Profile documentation export. This prototype selects built-in profiles by exact ID/version; it does not execute imported profile definitions.
+apiVersion: tracegrade.dev/v1
+kind: NormalizationProfile
+id: support-genai-v1
+version: 1.0.0
+name: Support · GenAI-style messages
+team: Customer support
+description: Read the single root’s GenAI-style message arrays and explicit support policy
+  judgments. Message arrays may be JSON strings or typed OTLP arrays; only text parts[].content are
+  joined. No child response fallback is used.
+fields:
+  - target: service
+    source: resource
+    attribute: service.name
+    format: text
+  - target: environment
+    source: resource
+    attribute: deployment.environment.name
+    format: text
+  - target: input
+    source: root
+    attribute: gen_ai.input.messages
+    format: message-parts
+    transform: Parse a message array and join text parts[].content
+  - target: output
+    source: root
+    attribute: gen_ai.output.messages
+    format: message-parts
+    transform: Parse a message array and join text parts[].content
+  - target: context
+    source: root
+    attribute: support.policy_context
+    format: text
+  - target: model
+    source: root
+    attribute: gen_ai.response.model
+    format: text
+  - target: costUsd
+    source: root
+    attribute: eval.total_cost_usd
+    format: number
+    unit: usd
+    transform: Keep explicit USD; require a finite nonnegative number
+  - target: evaluatorScores.policy_compliance.value
+    source: root
+    attribute: eval.policy_compliance.value
+    format: score
+    unit: score
+    transform: Accept a numeric 0–1 value only with the mapped provenance
+  - target: evaluatorScores.policy_compliance.provenance
+    source: root
+    attribute: eval.policy_compliance.provenance
+    format: text
+  - target: evaluatorScores.policy_compliance.reason
+    source: root
+    attribute: eval.policy_compliance.reason
+    format: text
+    optional: true

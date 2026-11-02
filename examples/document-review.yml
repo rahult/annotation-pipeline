@@ -1,0 +1,74 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Document citation review · synthetic example
+  description: SYNTHETIC SCENARIO. Review citation quality when the final answer lives on a child-span
+    event and retrieval output is only intermediate evidence. All traces and supplied judgments are
+    authored fixtures; no production agent was measured.
+  domain: document-review
+  agent: document-reviewer
+guidelines:
+  - id: citation_support
+    title: Cite the exact supporting passage
+    description: Every quoted notice period must agree with the retrieved section. Missing citation
+      judgments require review.
+  - id: final_answer
+    title: Evaluate the final response
+    description: Use the review.completed event on the finalization span; retrieval output is not the
+      final agent answer.
+dataset:
+  source: import
+  filters:
+    service: document-reviewer
+    environment: production
+    start: 2026-11-01T10:00:00.000Z
+    end: 2026-11-01T10:50:00.000Z
+    scenario: document-review
+  sample:
+    strategy: recent
+    size: 3
+    minimum: 3
+  required:
+    - input
+    - output
+    - context
+  normalization:
+    profile: document-events-v1
+    version: 1.0.0
+scorers:
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+  - ref: domain/document-review/citation-accuracy
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 0.95
+    weight: 25
+    enabled: true
+    critical: true
+review:
+  on_failure: true
+  sample_percent: 0
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

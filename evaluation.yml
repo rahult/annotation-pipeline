@@ -1,0 +1,86 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Support agent quality
+  description: Evaluate helpful, grounded, and reliable customer support responses before release.
+  domain: customer-support
+  agent: support-agent
+guidelines:
+  - id: guide_ground
+    title: Ground answers in approved knowledge
+    description: Every policy, eligibility, and product claim must be supported by retrieved context.
+      Acknowledge uncertainty when evidence is missing.
+  - id: guide_action
+    title: Keep actions within authority
+    description: Verify permissions before changing an account. Escalate refunds, security exceptions,
+      and unresolved tool errors to the appropriate team.
+  - id: guide_help
+    title: Resolve the customer’s actual request
+    description: Address the question directly, explain the next step, and honor requests for a human.
+      Never invent a completed action.
+dataset:
+  source: demo
+  filters:
+    service: support-agent
+    environment: production
+  sample:
+    strategy: recent
+    size: 40
+    minimum: 20
+  required:
+    - input
+    - output
+    - context
+scorers:
+  - ref: global/groundedness
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 0.85
+    weight: 35
+    enabled: true
+    critical: true
+  - ref: global/answer-relevance
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 0.8
+    weight: 25
+    enabled: true
+    critical: false
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/tool-success
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 100
+    weight: 15
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+review:
+  on_failure: true
+  sample_percent: 10
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

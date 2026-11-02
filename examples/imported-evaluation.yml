@@ -1,0 +1,54 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Support agent quality
+  description: Evaluate helpful, grounded, and reliable customer support responses before release.
+guidelines:
+  - id: guide_ground
+    title: Ground answers in approved knowledge
+    description: Every policy, eligibility, and product claim must be supported by retrieved context.
+      Acknowledge uncertainty when evidence is missing.
+  - id: guide_action
+    title: Keep actions within authority
+    description: Verify permissions before changing an account. Escalate refunds, security exceptions,
+      and unresolved tool errors to the appropriate team.
+  - id: guide_help
+    title: Resolve the customer’s actual request
+    description: Address the question directly, explain the next step, and honor requests for a human.
+      Never invent a completed action.
+dataset:
+  source: import
+  filters:
+    service: all
+    environment: all
+  sample:
+    strategy: recent
+    size: 2
+    minimum: 1
+  required:
+    - input
+    - output
+scorers:
+  - id: latency
+    name: Response latency
+    description: End-to-end trace duration in milliseconds, tested independently for every trace.
+    type: latency
+    threshold:
+      operator: lte
+      value: 10000
+    weight: 20
+    enabled: true
+    critical: true
+    unit: ms
+review:
+  on_failure: false
+  sample_percent: 0
+release:
+  minimum_pass_rate: 100
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html

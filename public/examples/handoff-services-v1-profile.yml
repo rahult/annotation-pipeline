@@ -1,0 +1,72 @@
+# Profile documentation export. This prototype selects built-in profiles by exact ID/version; it does not execute imported profile definitions.
+apiVersion: tracegrade.dev/v1
+kind: NormalizationProfile
+id: handoff-services-v1
+version: 1.0.0
+name: Handoff · specialist service
+team: Service desk
+description: Read the coordinator request and explicit total cost from the single root. Select the
+  response, received context, and supplied handoff judgment only from agent.respond emitted by
+  access-specialist. Identically named spans in other services do not qualify.
+fields:
+  - target: service
+    source: resource
+    attribute: service.name
+    format: text
+  - target: environment
+    source: resource
+    attribute: deployment.environment.name
+    format: text
+  - target: input
+    source: root
+    attribute: desk.request
+    format: text
+  - target: model
+    source: root
+    attribute: desk.coordinator.model
+    format: text
+  - target: costUsd
+    source: root
+    attribute: desk.total_cost_usd
+    format: number
+    unit: usd
+    transform: Keep explicit USD; require a finite nonnegative number
+  - target: attributes.handoff.count
+    source: root
+    attribute: desk.handoff_count
+    format: number
+    unit: number
+    transform: Copy a finite nonnegative number to the exact trace attribute key
+  - target: output
+    source: span
+    spanName: agent.respond
+    serviceName: access-specialist
+    attribute: desk.answer
+    format: text
+  - target: context
+    source: span
+    spanName: agent.respond
+    serviceName: access-specialist
+    attribute: desk.context_received
+    format: text
+  - target: evaluatorScores.handoff_completeness.value
+    source: span
+    attribute: desk.handoff_quality.value
+    format: score
+    unit: score
+    transform: Accept a numeric 0–1 value only with the mapped provenance
+    spanName: agent.respond
+    serviceName: access-specialist
+  - target: evaluatorScores.handoff_completeness.provenance
+    source: span
+    attribute: desk.handoff_quality.provenance
+    format: text
+    spanName: agent.respond
+    serviceName: access-specialist
+  - target: evaluatorScores.handoff_completeness.reason
+    source: span
+    attribute: desk.handoff_quality.reason
+    format: text
+    optional: true
+    spanName: agent.respond
+    serviceName: access-specialist

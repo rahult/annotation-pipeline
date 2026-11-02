@@ -1,0 +1,82 @@
+# Tracegrade evaluation configuration
+# YAML is the portable source; run identity and version are managed by the workspace.
+apiVersion: tracegrade.dev/v1
+kind: Evaluation
+metadata:
+  name: Streaming completion · synthetic example
+  description: SYNTHETIC SCENARIO. Evaluate first-token latency and an explicit completion receipt
+    without turning repeated token chunks into an invented final answer. All traces and supplied
+    judgments are authored fixtures; no production agent was measured.
+  domain: conversational-experience
+  agent: streaming-assistant
+guidelines:
+  - id: first_token
+    title: Deliver the first token within 800 ms
+    description: Use the explicit stream.ttft_ms value from stream-gateway. Whole-response latency is a
+      separate metric.
+  - id: completion_receipt
+    title: Require an explicit final completion receipt
+    description: Output is intentionally not a dataset preflight requirement so interrupted streams
+      remain evaluable. A missing stream.completed receipt must remain unscored and block release;
+      repeated chunks cannot become a final answer.
+dataset:
+  source: import
+  filters:
+    service: streaming-assistant
+    environment: production
+    start: 2026-11-01T11:40:00.000Z
+    end: 2026-11-01T11:50:00.000Z
+    scenario: streaming-completion
+  sample:
+    strategy: recent
+    size: 3
+    minimum: 3
+  required:
+    - input
+    - context
+  normalization:
+    profile: streaming-final-v1
+    version: 1.0.0
+scorers:
+  - ref: global/response-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 4000
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: global/cost-per-response
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 0.03
+    weight: 5
+    enabled: true
+    critical: false
+  - ref: agent/streaming-assistant/first-token-latency
+    version: 1.0.0
+    threshold:
+      operator: lte
+      value: 800
+    weight: 20
+    enabled: true
+    critical: false
+  - ref: agent/streaming-assistant/completion-receipt
+    version: 1.0.0
+    threshold:
+      operator: gte
+      value: 1
+    weight: 20
+    enabled: true
+    critical: true
+review:
+  on_failure: true
+  sample_percent: 0
+release:
+  minimum_pass_rate: 85
+execution:
+  trigger: manual
+  schedule: daily
+report:
+  format: html
